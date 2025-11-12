@@ -1,0 +1,162 @@
+PET-PLATFORM-BACKEND PROJECT STRUCTURE
+========================================
+
+Root Directory
+--------------
+├── server.js                      # Main server entry point
+├── package.json                   # Dependencies and scripts
+├── .gitignore                     # Git ignore rules
+├── database.sql                   # Database schema and sample data
+├── env.example                    # Environment variables template
+├── README.md                      # Main project documentation
+├── SETUP.md                       # Setup instructions
+├── API_DOCUMENTATION.md           # Complete API documentation
+└── project-structure.txt          # This file
+
+Config Directory
+----------------
+└── config/
+    └── database.js                # Database connection configuration
+
+Controllers Directory
+---------------------
+└── controllers/
+    ├── authController.js          # Authentication (register, login)
+    ├── userController.js          # User CRUD operations
+    ├── locationController.js      # Location CRUD operations
+    ├── petController.js           # Pet CRUD operations
+    ├── adoptionController.js      # Adoption request management
+    ├── sittingController.js       # Pet sitting request management
+    ├── bookingController.js       # Booking management
+    ├── paymentController.js       # Payment management
+    └── reviewController.js        # Review and rating management
+
+Routes Directory
+----------------
+└── routes/
+    ├── auth.js                    # Authentication routes
+    ├── users.js                   # User routes
+    ├── locations.js               # Location routes
+    ├── pets.js                    # Pet routes
+    ├── adoptions.js               # Adoption request routes
+    ├── sittings.js                # Pet sitting routes
+    ├── bookings.js                # Booking routes
+    ├── payments.js                # Payment routes
+    └── reviews.js                 # Review routes
+
+Middleware Directory
+--------------------
+└── middleware/
+    └── auth.js                    # JWT authentication middleware
+
+DATABASE TABLES
+===============
+1. Location          - Geographic locations
+2. User             - Pet owners, sitters, or both
+3. Pet              - Pet information and status
+4. AdoptionRequest  - Pet adoption requests
+5. SittingRequest   - Pet sitting requests
+6. Booking          - Booking records
+7. Payment          - Payment transactions
+8. Review           - User reviews and ratings
+
+API ENDPOINTS SUMMARY
+=====================
+Base URL: http://localhost:3000/api
+
+Auth:
+- POST /auth/register
+- POST /auth/login
+
+Users:
+- GET    /users
+- GET    /users/:id
+- PUT    /users/:id
+- DELETE /users/:id
+
+Locations:
+- GET    /locations
+- GET    /locations/:id
+- POST   /locations
+- PUT    /locations/:id
+- DELETE /locations/:id
+
+Pets:
+- GET    /pets
+- GET    /pets/:id
+- GET    /pets/owner/:ownerId
+- POST   /pets
+- PUT    /pets/:id
+- DELETE /pets/:id
+
+Adoption Requests:
+- GET    /adoptions
+- GET    /adoptions/:id
+- POST   /adoptions
+- PUT    /adoptions/:id
+- DELETE /adoptions/:id
+
+Sitting Requests:
+- GET    /sittings
+- GET    /sittings/:id
+- POST   /sittings
+- PUT    /sittings/:id
+- DELETE /sittings/:id
+
+Bookings:
+- GET    /bookings
+- GET    /bookings/:id
+- POST   /bookings
+- PUT    /bookings/:id
+- DELETE /bookings/:id
+
+Payments:
+- GET    /payments
+- GET    /payments/:id
+- POST   /payments
+- PUT    /payments/:id
+- DELETE /payments/:id
+
+Reviews:
+- GET    /reviews
+- GET    /reviews/:id
+- POST   /reviews
+- PUT    /reviews/:id
+- DELETE /reviews/:id
+
+TECHNOLOGY STACK
+================
+- Runtime:       Node.js
+- Framework:     Express.js
+- Database:      MySQL
+- ORM:           None (raw SQL with mysql2)
+- Auth:          JWT (jsonwebtoken)
+- Password Hash: bcryptjs
+- CORS:          cors
+- Environment:   dotenv
+- Dev Tool:      nodemon
+
+KEY FEATURES
+============
+✓ RESTful API architecture
+✓ JWT-based authentication
+✓ Password hashing with bcrypt
+✓ MySQL database integration
+✓ CRUD operations for all entities
+✓ Request validation
+✓ Error handling
+✓ CORS support
+✓ Environment-based configuration
+✓ Comprehensive documentation
+
+NEXT STEPS
+==========
+1. Install dependencies: npm install
+2. Set up MySQL database using database.sql
+3. Configure .env file from env.example
+4. Start server: npm run dev
+5. Test endpoints using Postman or curl
+6. Read API_DOCUMENTATION.md for details
+
+For detailed setup instructions, see SETUP.md
+For API reference, see API_DOCUMENTATION.md
