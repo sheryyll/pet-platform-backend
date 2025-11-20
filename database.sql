@@ -85,16 +85,20 @@ CREATE TABLE IF NOT EXISTS Payment (
     FOREIGN KEY (booking_id) REFERENCES Booking(booking_id)
 );
 
--- Create Review table (depends on Booking, User)
+-- Create Review table (depends on Booking, User, Pet)
 CREATE TABLE IF NOT EXISTS Review (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     booking_id INT,
+    reviewed_pet_id INT,
+    reviewed_sitter_id INT,
     reviewer_id INT,
     rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
     review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id),
-    FOREIGN KEY (reviewer_id) REFERENCES User(user_id)
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE SET NULL,
+    FOREIGN KEY (reviewed_pet_id) REFERENCES Pet(pet_id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewed_sitter_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (reviewer_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
 -- Insert sample data

@@ -28,7 +28,8 @@ Controllers Directory
     ├── adoptionController.js      # Adoption request management
     ├── sittingController.js       # Pet sitting request management
     ├── bookingController.js       # Booking management
-    └── paymentController.js       # Payment management
+    ├── paymentController.js       # Payment management
+    └── reviewController.js        # Review and rating management
 
 Routes Directory
 ----------------
@@ -40,7 +41,8 @@ Routes Directory
     ├── adoptions.js               # Adoption request routes
     ├── sittings.js                # Pet sitting routes
     ├── bookings.js                # Booking routes
-    └── payments.js                # Payment routes
+    ├── payments.js                # Payment routes
+    └── reviews.js                 # Review routes
 
 Middleware Directory
 --------------------
@@ -56,6 +58,7 @@ DATABASE TABLES
 5. SittingRequest   - Pet sitting requests
 6. Booking          - Booking records
 7. Payment          - Payment transactions
+8. Review           - User reviews and ratings for pets, sitters, or both
 
 API ENDPOINTS SUMMARY
 =====================
@@ -113,6 +116,18 @@ Payments:
 - POST   /payments
 - PUT    /payments/:id
 - DELETE /payments/:id
+
+Reviews:
+- GET    /reviews
+- GET    /reviews/:id
+- GET    /reviews/pets/:id
+- GET    /reviews/sitters/:id
+- GET    /reviews/combined/:petId/:sitterId
+- POST   /reviews/pets
+- POST   /reviews/sitters
+- POST   /reviews/combined
+- PUT    /reviews/:id
+- DELETE /reviews/:id
 
 TECHNOLOGY STACK
 ================

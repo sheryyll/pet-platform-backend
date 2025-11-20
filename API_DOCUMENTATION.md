@@ -427,6 +427,210 @@ Authorization: Bearer <your_jwt_token>
 
 ---
 
+## 9. Review Endpoints
+
+The review system supports three types of reviews:
+- **Pet Reviews**: Reviews specifically for pets
+- **Sitter Reviews**: Reviews specifically for sitters
+- **Combined Reviews**: Reviews that include both pet and sitter (e.g., from a sitting booking)
+
+All reviews use a **1-5 star rating system**.
+
+### Get All Reviews
+**GET** `/reviews`
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "review_id": 1,
+    "booking_id": 2,
+    "reviewed_pet_id": 3,
+    "reviewed_sitter_id": 2,
+    "reviewer_id": 1,
+    "rating": 5,
+    "comment": "Excellent pet sitting experience!",
+    "review_date": "2025-10-06T10:00:00.000Z",
+    "reviewer_name": "Alice Johnson",
+    "reviewer_email": "alice@example.com",
+    "pet_name": "Coco",
+    "species": "Rabbit",
+    "sitter_name": "Bob Williams"
+  }
+]
+```
+
+### Get Review by ID
+**GET** `/reviews/:id`
+
+**Response:** `200 OK` - Returns single review object with all details
+
+### Get Reviews for a Pet
+**GET** `/reviews/pets/:id`
+
+Returns all reviews for a specific pet.
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "review_id": 1,
+    "reviewed_pet_id": 3,
+    "reviewer_id": 1,
+    "rating": 5,
+    "comment": "Great pet!",
+    "review_date": "2025-10-06T10:00:00.000Z",
+    "reviewer_name": "Alice Johnson",
+    "pet_name": "Coco",
+    "species": "Rabbit"
+  }
+]
+```
+
+### Get Reviews for a Sitter
+**GET** `/reviews/sitters/:id`
+
+Returns all reviews for a specific sitter. Automatically updates the sitter's average rating.
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "review_id": 2,
+    "reviewed_sitter_id": 2,
+    "reviewer_id": 1,
+    "rating": 5,
+    "comment": "Excellent service!",
+    "review_date": "2025-10-06T10:00:00.000Z",
+    "reviewer_name": "Alice Johnson",
+    "sitter_name": "Bob Williams",
+    "pet_name": "Coco"
+  }
+]
+```
+
+### Get Combined Reviews (Pet + Sitter)
+**GET** `/reviews/combined/:petId/:sitterId`
+
+Returns reviews that include both a specific pet and sitter.
+
+**Response:** `200 OK` - Returns array of combined reviews
+
+### Create Review for Pet
+**POST** `/reviews/pets`
+
+**Request Body:**
+```json
+{
+  "pet_id": 3,
+  "reviewer_id": 1,
+  "rating": 5,
+  "comment": "Wonderful pet, very friendly!"
+}
+```
+
+**Rating:** Integer between 1 and 5 (required)
+**Required fields:** `pet_id`, `reviewer_id`, `rating`
+**Optional fields:** `comment`
+
+**Response:** `201 Created`
+```json
+{
+  "message": "Pet review created successfully",
+  "review_id": 1
+}
+```
+
+### Create Review for Sitter
+**POST** `/reviews/sitters`
+
+Creates a review for a sitter. Automatically updates the sitter's average rating in the User table.
+
+**Request Body:**
+```json
+{
+  "sitter_id": 2,
+  "reviewer_id": 1,
+  "rating": 5,
+  "comment": "Professional and caring sitter!"
+}
+```
+
+**Rating:** Integer between 1 and 5 (required)
+**Required fields:** `sitter_id`, `reviewer_id`, `rating`
+**Optional fields:** `comment`
+
+**Response:** `201 Created`
+```json
+{
+  "message": "Sitter review created successfully",
+  "review_id": 2
+}
+```
+
+### Create Combined Review (Pet + Sitter)
+**POST** `/reviews/combined`
+
+Creates a review that includes both a pet and sitter. Useful for sitting bookings where you review both.
+
+**Request Body:**
+```json
+{
+  "pet_id": 3,
+  "sitter_id": 2,
+  "reviewer_id": 1,
+  "rating": 5,
+  "comment": "Great experience with both the pet and sitter!",
+  "booking_id": 2
+}
+```
+
+**Rating:** Integer between 1 and 5 (required)
+**Required fields:** `pet_id`, `sitter_id`, `reviewer_id`, `rating`
+**Optional fields:** `comment`, `booking_id`
+
+**Response:** `201 Created`
+```json
+{
+  "message": "Combined review created successfully",
+  "review_id": 3
+}
+```
+
+### Update Review
+**PUT** `/reviews/:id`
+
+**Request Body:**
+```json
+{
+  "rating": 4,
+  "comment": "Updated comment"
+}
+```
+
+**Note:** Both fields are optional. If rating is updated for a sitter review, the sitter's average rating is automatically recalculated.
+
+**Response:** `200 OK`
+```json
+{
+  "message": "Review updated successfully"
+}
+```
+
+### Delete Review
+**DELETE** `/reviews/:id`
+
+**Response:** `200 OK`
+```json
+{
+  "message": "Review deleted successfully"
+}
+```
+
+**Note:** If a sitter review is deleted, the sitter's average rating is automatically recalculated.
+
+---
+
 ## Error Responses
 
 ### 400 Bad Request
