@@ -60,6 +60,24 @@ exports.getReviewById = async (req, res) => {
 exports.getReviewsForPet = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // First, check if the column exists
+    const [dbInfo] = await db.query('SELECT DATABASE() as db_name');
+    const dbName = dbInfo[0]?.db_name || process.env.DB_NAME || 'PetPlatform';
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = ?
+      AND TABLE_NAME = 'Review' 
+      AND COLUMN_NAME = 'reviewed_pet_id'
+    `, [dbName]);
+    
+    if (columns.length === 0) {
+      // Column doesn't exist, return empty array or migration message
+      console.warn('Column reviewed_pet_id does not exist in Review table. Please run migration script.');
+      return res.json([]);
+    }
+    
     const [reviews] = await db.query(`
       SELECT r.*, 
              u.name as reviewer_name, 
@@ -84,6 +102,24 @@ exports.getReviewsForPet = async (req, res) => {
 exports.getReviewsForSitter = async (req, res) => {
   try {
     const { id } = req.params;
+    
+    // First, check if the column exists
+    const [dbInfo] = await db.query('SELECT DATABASE() as db_name');
+    const dbName = dbInfo[0]?.db_name || process.env.DB_NAME || 'PetPlatform';
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = ?
+      AND TABLE_NAME = 'Review' 
+      AND COLUMN_NAME = 'reviewed_sitter_id'
+    `, [dbName]);
+    
+    if (columns.length === 0) {
+      // Column doesn't exist, return empty array or migration message
+      console.warn('Column reviewed_sitter_id does not exist in Review table. Please run migration script.');
+      return res.json([]);
+    }
+    
     const [reviews] = await db.query(`
       SELECT r.*, 
              u.name as reviewer_name, 
@@ -151,6 +187,23 @@ exports.createPetReview = async (req, res) => {
       });
     }
 
+    // Check if the column exists
+    const [dbInfo] = await db.query('SELECT DATABASE() as db_name');
+    const dbName = dbInfo[0]?.db_name || process.env.DB_NAME || 'PetPlatform';
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = ?
+      AND TABLE_NAME = 'Review' 
+      AND COLUMN_NAME = 'reviewed_pet_id'
+    `, [dbName]);
+    
+    if (columns.length === 0) {
+      return res.status(500).json({ 
+        message: 'Database schema not updated. Please run migration script to add reviewed_pet_id column.' 
+      });
+    }
+
     // Check if pet exists
     const [pets] = await db.query('SELECT pet_id FROM Pet WHERE pet_id = ?', [pet_id]);
     if (pets.length === 0) {
@@ -168,9 +221,6 @@ exports.createPetReview = async (req, res) => {
       'INSERT INTO Review (reviewed_pet_id, reviewer_id, rating, comment) VALUES (?, ?, ?, ?)',
       [pet_id, reviewer_id, rating, comment || null]
     );
-
-    // Update pet's average rating (if you want to calculate it)
-    // This could be done via a trigger or here
 
     res.status(201).json({
       message: 'Pet review created successfully',
@@ -198,6 +248,23 @@ exports.createSitterReview = async (req, res) => {
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ 
         message: 'Rating must be between 1 and 5' 
+      });
+    }
+
+    // Check if the column exists
+    const [dbInfo] = await db.query('SELECT DATABASE() as db_name');
+    const dbName = dbInfo[0]?.db_name || process.env.DB_NAME || 'PetPlatform';
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = ?
+      AND TABLE_NAME = 'Review' 
+      AND COLUMN_NAME = 'reviewed_sitter_id'
+    `, [dbName]);
+    
+    if (columns.length === 0) {
+      return res.status(500).json({ 
+        message: 'Database schema not updated. Please run migration script to add reviewed_sitter_id column.' 
       });
     }
 
@@ -252,6 +319,26 @@ exports.createCombinedReview = async (req, res) => {
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ 
         message: 'Rating must be between 1 and 5' 
+      });
+    }
+
+    // Check if the columns exist
+    const [dbInfo] = await db.query('SELECT DATABASE() as db_name');
+    const dbName = dbInfo[0]?.db_name || process.env.DB_NAME || 'PetPlatform';
+    const [columns] = await db.query(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = ?
+      AND TABLE_NAME = 'Review' 
+      AND COLUMN_NAME IN ('reviewed_pet_id', 'reviewed_sitter_id')
+    `, [dbName]);
+    
+    const hasPetColumn = columns.some(c => c.COLUMN_NAME === 'reviewed_pet_id');
+    const hasSitterColumn = columns.some(c => c.COLUMN_NAME === 'reviewed_sitter_id');
+    
+    if (!hasPetColumn || !hasSitterColumn) {
+      return res.status(500).json({ 
+        message: 'Database schema not updated. Please run migration script to add reviewed_pet_id and reviewed_sitter_id columns.' 
       });
     }
 
