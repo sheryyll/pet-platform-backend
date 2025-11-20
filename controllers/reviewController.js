@@ -73,8 +73,9 @@ exports.getReviewsForPet = async (req, res) => {
     `, [dbName]);
     
     if (columns.length === 0) {
-      // Column doesn't exist, return empty array or migration message
-      console.warn('Column reviewed_pet_id does not exist in Review table. Please run migration script.');
+      // Column doesn't exist, return empty array
+      // Note: Auto-migration should handle this on next server restart
+      console.warn('Column reviewed_pet_id does not exist. Auto-migration will run on server restart.');
       return res.json([]);
     }
     
@@ -115,8 +116,9 @@ exports.getReviewsForSitter = async (req, res) => {
     `, [dbName]);
     
     if (columns.length === 0) {
-      // Column doesn't exist, return empty array or migration message
-      console.warn('Column reviewed_sitter_id does not exist in Review table. Please run migration script.');
+      // Column doesn't exist, return empty array
+      // Note: Auto-migration should handle this on next server restart
+      console.warn('Column reviewed_sitter_id does not exist. Auto-migration will run on server restart.');
       return res.json([]);
     }
     
@@ -200,7 +202,7 @@ exports.createPetReview = async (req, res) => {
     
     if (columns.length === 0) {
       return res.status(500).json({ 
-        message: 'Database schema not updated. Please run migration script to add reviewed_pet_id column.' 
+        message: 'Database schema not updated. Auto-migration will run on server restart. Please restart the server or contact administrator.' 
       });
     }
 
@@ -264,7 +266,7 @@ exports.createSitterReview = async (req, res) => {
     
     if (columns.length === 0) {
       return res.status(500).json({ 
-        message: 'Database schema not updated. Please run migration script to add reviewed_sitter_id column.' 
+        message: 'Database schema not updated. Auto-migration will run on server restart. Please restart the server or contact administrator.' 
       });
     }
 
@@ -338,7 +340,7 @@ exports.createCombinedReview = async (req, res) => {
     
     if (!hasPetColumn || !hasSitterColumn) {
       return res.status(500).json({ 
-        message: 'Database schema not updated. Please run migration script to add reviewed_pet_id and reviewed_sitter_id columns.' 
+        message: 'Database schema not updated. Auto-migration will run on server restart. Please restart the server or contact administrator.' 
       });
     }
 

@@ -2,6 +2,13 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Auto-migrate database on startup
+const autoMigrate = require('./scripts/autoMigrate');
+autoMigrate().catch(err => {
+  console.error('Migration warning:', err.message);
+  // Continue server startup even if migration fails
+});
+
 const app = express();
 
 // Middleware
@@ -20,6 +27,7 @@ const paymentRoutes = require('./routes/payments');
 const reviewRoutes = require('./routes/reviews');
 const locationRoutes = require('./routes/locations');
 const availabilityRoutes = require('./routes/availability');
+const migrationRoutes = require('./routes/migration');
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -36,6 +44,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/availability', availabilityRoutes);
+app.use('/api/migration', migrationRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
