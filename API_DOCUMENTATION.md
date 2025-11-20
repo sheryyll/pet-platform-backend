@@ -427,54 +427,6 @@ Authorization: Bearer <your_jwt_token>
 
 ---
 
-## 9. Review Endpoints
-
-### Get All Reviews
-**GET** `/reviews`
-
-**Response:** `200 OK`
-```json
-[
-  {
-    "review_id": 1,
-    "booking_id": 2,
-    "reviewer_id": 1,
-    "rating": 5,
-    "comment": "Excellent pet sitting experience!",
-    "review_date": "2025-10-06T10:00:00.000Z",
-    "reviewer_name": "Alice Johnson",
-    "reviewer_email": "alice@example.com",
-    "request_type": "Sitting"
-  }
-]
-```
-
-### Get Review by ID
-**GET** `/reviews/:id`
-
-### Create Review
-**POST** `/reviews`
-
-**Request Body:**
-```json
-{
-  "booking_id": 2,
-  "reviewer_id": 1,
-  "rating": 5,
-  "comment": "Excellent pet sitting experience!"
-}
-```
-
-**Rating:** Integer between 1 and 5
-
-### Update Review
-**PUT** `/reviews/:id`
-
-### Delete Review
-**DELETE** `/reviews/:id`
-
----
-
 ## Error Responses
 
 ### 400 Bad Request

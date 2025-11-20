@@ -17,7 +17,6 @@ const adoptionRoutes = require('./routes/adoptions');
 const sittingRoutes = require('./routes/sittings');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payments');
-const reviewRoutes = require('./routes/reviews');
 const locationRoutes = require('./routes/locations');
 const availabilityRoutes = require('./routes/availability');
 
@@ -33,7 +32,6 @@ app.use('/api/sitting', sittingRoutes);
 app.use('/api/pet-sitting', sittingRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/reviews', reviewRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/availability', availabilityRoutes);
 
